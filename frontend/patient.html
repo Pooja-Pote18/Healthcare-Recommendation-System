@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Healthcare Prediction</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+
+body{
+font-family:Segoe UI;
+background:#eef3ff;
+margin:0;
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+/* MAIN CONTAINER */
+
+.page{
+display:flex;
+gap:40px;
+width:850px;
+justify-content:center;
+align-items:center;
+transition:0.4s;
+}
+
+.page.active{
+justify-content:space-between;
+align-items:flex-start;
+}
+
+/* FORM */
+
+.form-box{
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 8px 20px rgba(0,0,0,0.1);
+width:360px;
+}
+
+.form-box h2{
+color:#1565c0;
+margin-bottom:10px;
+text-align:center;
+}
+
+input{
+width:100%;
+padding:9px;
+margin:6px 0;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+/* BUTTON */
+
+button{
+padding:10px;
+background:#1565c0;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+width:100%;
+margin-top:5px;
+}
+
+button:hover{
+background:#0d47a1;
+}
+
+/* REPORT */
+
+.report-box{
+background:white;
+padding:15px;
+border-radius:10px;
+box-shadow:0 8px 20px rgba(0,0,0,0.15);
+width:330px;
+display:none;
+}
+
+.report-title{
+text-align:center;
+color:#1565c0;
+margin-bottom:10px;
+font-size:20px;
+}
+
+/* SECTIONS */
+
+.section{
+background:#f8fbff;
+padding:8px;
+border-radius:7px;
+margin-bottom:7px;
+font-size:14px;
+}
+
+.patient{border-left:4px solid #1976d2;}
+.bmi{border-left:4px solid #6a1b9a;}
+.disease{border-left:4px solid #d32f2f;}
+.risk{border-left:4px solid #f9a825;}
+.medicine{border-left:4px solid #2e7d32;}
+.doctor{border-left:4px solid #00838f;}
+
+/* BADGE */
+
+.badge{
+padding:4px 10px;
+border-radius:12px;
+color:white;
+font-size:12px;
+}
+
+.red{background:#c62828;}
+.green{background:#2e7d32;}
+.orange{background:#f9a825;}
+
+/* RISK BAR */
+
+.risk-bar{
+height:7px;
+background:#ddd;
+border-radius:5px;
+margin-top:4px;
+}
+
+.risk-fill{
+height:7px;
+border-radius:5px;
+}
+
+.low{background:#2e7d32;width:25%;}
+.medium{background:#f9a825;width:60%;}
+.high{background:#c62828;width:85%;}
+
+.download-btn{
+background:#2e7d32;
+margin-top:5px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="page" id="page">
+
+<!-- FORM -->
+
+<div class="form-box">
+
+<h2>Patient Details</h2>
+
+<input id="name" placeholder="Name">
+<input id="age" type="number" placeholder="Age">
+<input id="bp" type="number" placeholder="Blood Pressure">
+<input id="glucose" type="number" placeholder="Glucose Level">
+<input id="hr" type="number" placeholder="Heart Rate">
+
+<button onclick="predict()">Predict</button>
+
+</div>
+
+<!-- REPORT -->
+
+<div class="report-box" id="report">
+
+<h2 class="report-title">Healthcare Report</h2>
+
+<div class="section patient">
+<b>Patient Info</b>
+<p id="patientDetails"></p>
+</div>
+
+<div class="section bmi">
+<b>BMI</b>
+<p id="bmiResult"></p>
+</div>
+
+<div class="section disease">
+<b>Disease</b>
+<p id="diseaseResult"></p>
+</div>
+
+<div class="section risk">
+<b>Risk Level</b>
+<div class="risk-bar">
+<div id="riskBar" class="risk-fill"></div>
+</div>
+<p id="riskPercent"></p>
+</div>
+
+<div class="section medicine">
+<b>Medicine</b>
+<p id="medicineResult"></p>
+</div>
+
+<div class="section doctor">
+<b>Doctor</b>
+<p id="doctorResult"></p>
+</div>
+
+<button class="download-btn" onclick="downloadPDF()">Download Report</button>
+
+</div>
+
+</div>
+
+<script>
+
+function bmiCategory(bmi){
+
+if(bmi<18.5) return "Underweight";
+if(bmi<25) return "Normal";
+if(bmi<30) return "Overweight";
+return "Obese";
+
+}
+
+function predict(){
+
+document.getElementById("page").classList.add("active");
+
+let name=document.getElementById("name").value;
+let age=document.getElementById("age").value;
+let bp=parseInt(document.getElementById("bp").value);
+let glucose=parseInt(document.getElementById("glucose").value);
+let hr=parseInt(document.getElementById("hr").value);
+
+if(name==""||age==""){
+alert("Fill details");
+return;
+}
+
+document.getElementById("report").style.display="block";
+
+/* BMI */
+
+let height=170;
+let weight=70;
+
+let bmi=(weight/((height/100)*(height/100))).toFixed(2);
+
+/* DISEASE */
+
+let disease="Normal";
+
+if(glucose>180) disease="Diabetes";
+else if(bp>140) disease="Hypertension";
+else if(hr>110) disease="Fever";
+
+/* MEDICINE */
+
+let medicine={
+"Diabetes":"Metformin",
+"Hypertension":"Amlodipine",
+"Fever":"Paracetamol",
+"Normal":"No medicine required"
+};
+
+/* DOCTOR */
+
+let doctor={
+"Diabetes":"Consult Endocrinologist",
+"Hypertension":"Consult Cardiologist",
+"Fever":"Consult General Physician",
+"Normal":"No doctor needed"
+};
+
+/* DETAILS */
+
+document.getElementById("patientDetails").innerHTML=
+
+"Name : "+name+
+"<br>Age : "+age+
+"<br>BP : "+bp+
+"<br>Glucose : "+glucose+
+"<br>Heart Rate : "+hr;
+
+/* BMI */
+
+document.getElementById("bmiResult").innerHTML=
+
+"BMI : "+bmi+
+"<br>"+bmiCategory(bmi);
+
+/* DISEASE */
+
+document.getElementById("diseaseResult").innerHTML=
+
+"<span class='badge red'>"+disease+"</span>";
+
+/* RISK */
+
+let riskBar=document.getElementById("riskBar");
+
+let risk=20;
+
+if(disease=="Normal"){
+riskBar.className="risk-fill low";
+risk=20;
+}
+else if(disease=="Fever"){
+riskBar.className="risk-fill medium";
+risk=60;
+}
+else{
+riskBar.className="risk-fill high";
+risk=85;
+}
+
+document.getElementById("riskPercent").innerHTML="Risk Score : "+risk+"%";
+
+/* MEDICINE */
+
+document.getElementById("medicineResult").innerHTML=
+
+medicine[disease];
+
+/* DOCTOR */
+
+document.getElementById("doctorResult").innerHTML=
+
+doctor[disease];
+
+/* ⭐ SAVE HISTORY */
+
+let history = JSON.parse(localStorage.getItem("historyData")) || [];
+
+let record = {
+
+date: new Date().toLocaleString(),
+name:name,
+age:age,
+bp:bp,
+glucose:glucose,
+hr:hr,
+disease:disease,
+risk:risk
+
+};
+
+history.push(record);
+
+localStorage.setItem("historyData",JSON.stringify(history));
+
+}
+
+function downloadPDF(){
+
+let element=document.getElementById("report");
+
+html2pdf().from(element).save("Healthcare_Report.pdf");
+
+}
+
+</script>
+
+</body>
+</html>

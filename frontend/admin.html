@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hospital Admin Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+margin:0;
+font-family:Segoe UI;
+display:flex;
+height:100vh;
+background:#f4f7fc;
+transition:0.3s;
+}
+
+/* DARK MODE */
+
+body.dark{
+background:#1e1e1e;
+color:white;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:200px;
+background:#1565c0;
+color:white;
+padding-top:30px;
+display:flex;
+flex-direction:column;
+}
+
+.sidebar h3{
+text-align:center;
+margin-bottom:30px;
+}
+
+.sidebar a{
+color:white;
+text-decoration:none;
+padding:12px 20px;
+}
+
+.sidebar a:hover{
+background:#0d47a1;
+}
+
+.active{
+background:#0d47a1;
+}
+
+/* MAIN */
+
+.main{
+flex:1;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:auto;
+}
+
+/* DASHBOARD */
+
+.dashboard{
+width:900px;
+background:white;
+padding:25px;
+border-radius:18px;
+box-shadow:0 20px 40px rgba(0,0,0,0.15);
+}
+
+body.dark .dashboard{
+background:#2c2c2c;
+}
+
+h2{
+text-align:center;
+color:#1565c0;
+margin-bottom:15px;
+}
+
+/* BUTTONS */
+
+.top-controls{
+display:flex;
+justify-content:space-between;
+margin-bottom:15px;
+}
+
+.btn{
+padding:6px 12px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+background:#1565c0;
+color:white;
+font-size:13px;
+}
+
+.btn:hover{
+background:#0d47a1;
+}
+
+/* STATS */
+
+.stats{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px;
+margin-bottom:20px;
+}
+
+.stat-card{
+background:linear-gradient(135deg,#4facfe,#00f2fe);
+color:white;
+padding:15px;
+border-radius:12px;
+text-align:center;
+}
+
+.stat-card h3{
+font-size:22px;
+margin-top:5px;
+}
+
+/* CHARTS */
+
+.chart-section{
+display:flex;
+gap:30px;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+.chart-wrapper{
+width:350px;
+height:260px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+<h3>🏥 Hospital</h3>
+<a href="patient.html">Patient</a>
+<a href="history.html">History</a>
+<a href="admin.html" class="active">Admin</a>
+<a href="login.html">Logout</a>
+</div>
+
+<div class="main">
+
+<div class="dashboard">
+
+<h2>📊 Admin Dashboard</h2>
+
+<div class="top-controls">
+<button class="btn" onclick="toggleChart()">Switch Chart</button>
+<button class="btn" onclick="toggleDark()">Dark Mode</button>
+<button class="btn" onclick="exportData()">Export Data</button>
+</div>
+
+<div class="stats">
+
+<div class="stat-card">
+Total Patients
+<h3 id="total">0</h3>
+</div>
+
+<div class="stat-card">
+High Risk (>70%)
+<h3 id="highRisk">0</h3>
+</div>
+
+<div class="stat-card">
+Most Common Disease
+<h3 id="commonDisease">-</h3>
+</div>
+
+</div>
+
+<div class="chart-section">
+
+<div class="chart-wrapper">
+<canvas id="diseaseChart"></canvas>
+</div>
+
+<div class="chart-wrapper">
+<canvas id="riskChart"></canvas>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<script>
+
+/* ADMIN ACCESS */
+
+if(localStorage.getItem("role")!=="admin"){
+alert("Access Denied");
+window.location="login.html";
+}
+
+/* LOAD DATA FUNCTION */
+
+function loadDashboard(){
+
+let data = JSON.parse(localStorage.getItem("historyData")) || [];
+
+/* TOTAL PATIENTS */
+
+document.getElementById("total").innerText = data.length;
+
+/* HIGH RISK */
+
+let highRisk = data.filter(p => parseFloat(p.risk || 0) > 70);
+document.getElementById("highRisk").innerText = highRisk.length;
+
+/* DISEASE COUNT */
+
+let diseaseCount = {};
+
+data.forEach(p=>{
+let d = p.disease || "Unknown";
+diseaseCount[d] = (diseaseCount[d] || 0) + 1;
+});
+
+/* MOST COMMON DISEASE */
+
+let mostCommon="-";
+let max=0;
+
+for(let d in diseaseCount){
+if(diseaseCount[d] > max){
+max = diseaseCount[d];
+mostCommon = d;
+}
+}
+
+document.getElementById("commonDisease").innerText = mostCommon;
+
+/* RISK DISTRIBUTION */
+
+let low=0,medium=0,high=0;
+
+data.forEach(p=>{
+let r=parseFloat(p.risk || 0);
+
+if(r<=40) low++;
+else if(r<=70) medium++;
+else high++;
+});
+
+/* CHARTS */
+
+let ctx=document.getElementById("diseaseChart");
+
+new Chart(ctx,{
+type:"bar",
+data:{
+labels:Object.keys(diseaseCount),
+datasets:[{
+label:"Disease Count",
+data:Object.values(diseaseCount),
+backgroundColor:"#1565c0"
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false
+}
+});
+
+new Chart(document.getElementById("riskChart"),{
+type:"pie",
+data:{
+labels:["Low","Medium","High"],
+datasets:[{
+data:[low,medium,high],
+backgroundColor:["green","orange","red"]
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false
+}
+});
+
+}
+
+/* RUN DASHBOARD */
+
+loadDashboard();
+
+/* DARK MODE */
+
+function toggleDark(){
+document.body.classList.toggle("dark");
+}
+
+/* EXPORT DATA */
+
+function exportData(){
+
+let data = JSON.parse(localStorage.getItem("historyData")) || [];
+
+let blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+
+let link = document.createElement("a");
+
+link.href = URL.createObjectURL(blob);
+
+link.download="PatientData.json";
+
+link.click();
+
+}
+
+</script>
+
+</body>
+</html>

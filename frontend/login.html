@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Healthcare Login</title>
+
+
+<style>
+
+body{
+font-family:'Segoe UI',sans-serif;
+background:linear-gradient(135deg,#89CFF0,#E0F7FA);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+margin:0;
+}
+
+.container{
+width:380px;
+background:white;
+padding:40px;
+border-radius:15px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+text-align:center;
+}
+
+h2{
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:14px;
+}
+
+input:focus{
+outline:none;
+border-color:#3498db;
+box-shadow:0 0 5px rgba(52,152,219,0.4);
+}
+
+button{
+width:100%;
+padding:12px;
+background:#3498db;
+border:none;
+color:white;
+font-size:15px;
+border-radius:8px;
+cursor:pointer;
+margin-top:10px;
+transition:0.3s;
+}
+
+button:hover{
+background:#2c80b4;
+}
+
+.links{
+margin-top:15px;
+}
+
+.links a{
+color:#3498db;
+cursor:pointer;
+text-decoration:none;
+font-size:14px;
+margin:5px;
+}
+
+.links a:hover{
+text-decoration:underline;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>🩺 Healthcare Login</h2>
+
+<!-- LOGIN FORM -->
+<div id="loginForm">
+
+<input type="text" id="username" placeholder="👤 Enter Username">
+<input type="password" id="password" placeholder="🔒 Enter Password">
+
+<button onclick="login()">Sign In</button>
+
+<div class="links">
+<a onclick="showSignup()">Create Account</a> |
+<a onclick="forgotPassword()">Forgot Password?</a>
+</div>
+
+</div>
+
+<!-- SIGNUP FORM -->
+<div id="signupForm" style="display:none">
+
+<h3>Create Account</h3>
+
+<input type="text" id="newUser" placeholder="Create Username">
+<input type="password" id="newPass" placeholder="Create Password">
+
+<button onclick="signup()">Register</button>
+
+<div class="links">
+<a onclick="showLogin()">Back to Login</a>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+// LOGIN FUNCTION
+function login(){
+
+let user=document.getElementById("username").value;
+let pass=document.getElementById("password").value;
+
+let savedPass=localStorage.getItem(user);
+
+// ADMIN LOGIN
+if(user==="admin" && pass==="admin@123"){
+
+localStorage.setItem("role","admin");
+window.location="admin.html";
+
+}
+
+// PATIENT LOGIN
+else if(savedPass===pass){
+
+localStorage.setItem("role","patient");
+window.location="patient.html";
+
+}
+
+else{
+
+alert("Invalid Username or Password");
+
+}
+
+}
+
+
+// SIGNUP FUNCTION
+function signup(){
+
+let user=document.getElementById("newUser").value;
+let pass=document.getElementById("newPass").value;
+
+if(user==="" || pass===""){
+alert("Please fill all fields");
+return;
+}
+
+localStorage.setItem(user,pass);
+
+alert("Account Created Successfully");
+
+showLogin();
+
+}
+
+
+// FORGOT PASSWORD
+function forgotPassword(){
+
+let user=prompt("Enter your username");
+
+let pass=localStorage.getItem(user);
+
+if(pass){
+alert("Your password is: "+pass);
+}
+else{
+alert("User not found");
+}
+
+}
+
+
+// SHOW SIGNUP
+function showSignup(){
+
+document.getElementById("loginForm").style.display="none";
+document.getElementById("signupForm").style.display="block";
+
+}
+
+
+// SHOW LOGIN
+function showLogin(){
+
+document.getElementById("signupForm").style.display="none";
+document.getElementById("loginForm").style.display="block";
+
+}
+
+</script>
+
+</body>
+</html>

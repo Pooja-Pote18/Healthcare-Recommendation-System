@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Patient History</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Segoe UI;
+display:flex;
+height:100vh;
+background:#f4f7fc;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:210px;
+background:#1565c0;
+color:white;
+padding-top:25px;
+display:flex;
+flex-direction:column;
+}
+
+.sidebar h3{
+text-align:center;
+margin-bottom:30px;
+}
+
+.sidebar a{
+color:white;
+text-decoration:none;
+padding:12px 20px;
+}
+
+.sidebar a:hover{
+background:#0d47a1;
+}
+
+.active{
+background:#0d47a1;
+}
+
+/* MAIN */
+
+.main{
+flex:1;
+padding:30px;
+overflow:auto;
+}
+
+h2{
+color:#1565c0;
+margin-bottom:15px;
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+th, td{
+padding:10px;
+text-align:center;
+border-bottom:1px solid #ddd;
+}
+
+th{
+background:#1565c0;
+color:white;
+}
+
+tr:hover{
+background:#f1f1f1;
+}
+
+/* BUTTON */
+
+.btn-delete{
+padding:5px 10px;
+background:#ff4d4d;
+border:none;
+color:white;
+border-radius:6px;
+cursor:pointer;
+}
+
+.btn-delete:hover{
+background:#cc0000;
+}
+
+.clear-btn{
+margin-bottom:15px;
+padding:8px 12px;
+background:#1565c0;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.clear-btn:hover{
+background:#0d47a1;
+}
+
+.empty{
+text-align:center;
+padding:20px;
+color:#777;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<h3>🏥 Hospital</h3>
+
+<a href="patient.html">Patient</a>
+<a href="history.html" class="active">History</a>
+<a href="admin.html">Admin</a>
+<a href="login.html">Logout</a>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+<h2>📋 Patient History</h2>
+
+<button class="clear-btn" onclick="clearHistory()">Clear All</button>
+
+<table id="historyTable">
+
+<thead>
+
+<tr>
+<th>Date</th>
+<th>Name</th>
+<th>Age</th>
+<th>Blood Pressure</th>
+<th>Glucose</th>
+<th>Heart Rate</th>
+<th>Disease</th>
+<th>Risk %</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="tableBody">
+</tbody>
+
+</table>
+
+<div id="emptyMsg" class="empty"></div>
+
+</div>
+
+<script>
+
+/* ADMIN ACCESS */
+
+if(localStorage.getItem("role")!=="admin"){
+alert("Only admin can access history");
+window.location="patient.html";
+}
+
+/* LOAD DATA */
+
+function loadTable(){
+
+let data = JSON.parse(localStorage.getItem("historyData")) || [];
+
+let tableBody = document.getElementById("tableBody");
+let emptyMsg = document.getElementById("emptyMsg");
+
+tableBody.innerHTML="";
+
+if(data.length===0){
+emptyMsg.innerText="No patient records found";
+return;
+}
+
+emptyMsg.innerText="";
+
+/* CREATE ROWS */
+
+data.forEach((item,index)=>{
+
+let row = tableBody.insertRow();
+
+row.insertCell(0).innerText = item.date || "-";
+row.insertCell(1).innerText = item.name || "-";
+row.insertCell(2).innerText = item.age || "-";
+row.insertCell(3).innerText = item.bp || "-";
+row.insertCell(4).innerText = item.glucose || "-";
+row.insertCell(5).innerText = item.hr || "-";
+row.insertCell(6).innerText = item.disease || "-";
+row.insertCell(7).innerText = item.risk || "-";
+
+let actionCell = row.insertCell(8);
+
+let deleteBtn = document.createElement("button");
+
+deleteBtn.innerText="Delete";
+deleteBtn.className="btn-delete";
+
+deleteBtn.onclick=function(){
+deleteRecord(index);
+};
+
+actionCell.appendChild(deleteBtn);
+
+});
+
+}
+
+/* DELETE RECORD */
+
+function deleteRecord(index){
+
+let data = JSON.parse(localStorage.getItem("historyData")) || [];
+
+if(confirm("Delete this record?")){
+
+data.splice(index,1);
+
+localStorage.setItem("historyData",JSON.stringify(data));
+
+loadTable();
+
+}
+
+}
+
+/* CLEAR ALL */
+
+function clearHistory(){
+
+if(confirm("Delete all history?")){
+
+localStorage.removeItem("historyData");
+
+loadTable();
+
+}
+
+}
+
+/* INITIAL LOAD */
+
+loadTable();
+
+</script>
+
+</body>
+</html>
