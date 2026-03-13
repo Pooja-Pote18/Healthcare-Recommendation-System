@@ -37,7 +37,7 @@ A Machine Learning based Healthcare Prediction System that analyzes patient heal
         
         Heart Rate
 
-Model Output
+    Model Output
 
     Predicted Disease
     
