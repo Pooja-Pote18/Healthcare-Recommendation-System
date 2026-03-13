@@ -27,21 +27,21 @@ A Machine Learning based Healthcare Prediction System that analyzes patient heal
 
   The system uses a Machine Learning model trained with Scikit-Learn to predict possible diseases based on patient health     parameters.
 
-Model Input Features
+    Model Input Features
 
-    Age
-    
-    Blood Pressure (default value used)
-    
-    Glucose Level
-    
-    Heart Rate
+        Age
+        
+        Blood Pressure (default value used)
+        
+        Glucose Level
+        
+        Heart Rate
 
 Model Output
 
-Predicted Disease
-
-Model is stored using Joblib.
+    Predicted Disease
+    
+    Model is stored using Joblib.
 
 🛠 Technologies Used
 
