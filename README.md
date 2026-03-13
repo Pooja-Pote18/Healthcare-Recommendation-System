@@ -71,6 +71,7 @@ A Machine Learning based Healthcare Prediction System that analyzes patient heal
         │   ├── app.py
         │   ├── model
         │   │   └── disease_model.pkl
+            │   └──model.ibynb  
         │   └── requirements.txt
         │
         ├── frontend
@@ -78,7 +79,6 @@ A Machine Learning based Healthcare Prediction System that analyzes patient heal
         │   ├── admin.html
         │   ├── patient.html
         │   ├── history.html
-        │   ├── style.css
         
         │── requirements.txt
         
