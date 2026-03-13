@@ -72,8 +72,9 @@ A Machine Learning based Healthcare Prediction System that analyzes patient heal
         │   ├── model
         │   │   └── disease_model.pkl
             │   └──model.ibynb  
+            
         ├── dataset
-            ├── healthcare_recmmendation_dataset.csv
+            ├── healthcare_recmmendation_dataset.xlxs
             
         ├── frontend
         │   ├── login.html
