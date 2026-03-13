@@ -58,10 +58,6 @@ A Machine Learning based Healthcare Prediction System that analyzes patient heal
     NumPy
     
     HTML
-    
-    CSS
-    
-    JavaScript
 
 📂 Project Structure
 
