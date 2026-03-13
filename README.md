@@ -106,7 +106,7 @@ A Machine Learning based Healthcare Prediction System that analyzes patient heal
     
     Risk score is calculated.
     
-    Doctor recommendation system
+    Recommended Doctor
 
     Admin dashboard analytics
     
