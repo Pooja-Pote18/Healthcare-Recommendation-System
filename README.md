@@ -106,4 +106,12 @@ A Machine Learning based Healthcare Prediction System that analyzes patient heal
     
     Risk score is calculated.
     
+    Doctor recommendation system
+
+    Admin dashboard analytics
+    
     System generates a medical report.
+
+    Medical report PDF download
+    
+   
