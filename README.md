@@ -74,7 +74,7 @@ A Machine Learning based Healthcare Prediction System that analyzes patient heal
             │   └──model.ibynb  
             
         ├── dataset
-            ├── healthcare_recmmendation_dataset.xlxs
+            ├── healthcare_recmmendation_dataset.xlsx
             
         ├── frontend
         │   ├── login.html
@@ -85,3 +85,25 @@ A Machine Learning based Healthcare Prediction System that analyzes patient heal
         │── requirements.txt
         
         └── README.md
+
+
+▶ Running the Application
+
+    Run the Flask server:
+    
+        python app.py
+
+
+📊 System Workflow
+
+    User enters patient health details.
+    
+    System calculates BMI.
+    
+    Health parameters are sent to the ML model.
+    
+    Model predicts possible disease.
+    
+    Risk score is calculated.
+    
+    System generates a medical report.
