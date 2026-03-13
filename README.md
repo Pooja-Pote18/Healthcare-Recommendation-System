@@ -39,9 +39,9 @@ A Machine Learning based Healthcare Prediction System that analyzes patient heal
 
     Model Output
 
-    Predicted Disease
-    
-    Model is stored using Joblib.
+        Predicted Disease
+        
+        Model is stored using Joblib.
 
 🛠 Technologies Used
 
@@ -62,3 +62,24 @@ A Machine Learning based Healthcare Prediction System that analyzes patient heal
     CSS
     
     JavaScript
+
+📂 Project Structure
+
+        Healthcare_Project
+        │
+        ├── backend
+        │   ├── app.py
+        │   ├── model
+        │   │   └── disease_model.pkl
+        │   └── requirements.txt
+        │
+        ├── frontend
+        │   ├── login.html
+        │   ├── admin.html
+        │   ├── patient.html
+        │   ├── history.html
+        │   ├── style.css
+        
+        │── requirements.txt
+        
+        └── README.md
